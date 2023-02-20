@@ -1,14 +1,20 @@
 'use strict';
+console.log('hello world');
 
 // ********** GLOBAL VARIABLES **********
+
 let prodArray = [];
 let votingRounds = 25;
 
 // ********** DOM WINDOWS **********
+
 let imgContainer = document.getElementById('img-container');
 let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
+
+let resultsBtn = document.getElementById('results-btn');
+let resultsList = document.getElementById('results-container');
 
 // ********** CONSTRUCTOR FUNCTIONS **********
 function Product(name, fileExtension = 'jpg') {
@@ -18,48 +24,48 @@ function Product(name, fileExtension = 'jpg') {
   this.views = 0;
 }
 
-// ********** EVENT HANDLERS **********
-
 // ********** HELPER FUNCTIONS/UTILITIES **********
+
 function renderImg() {
   // TODO: 3 images per page
-  let imgOneIndex = getRandomIndex(prodArray);
-  let imgTwoIndex = getRandomIndex(prodArray);
-  let imgThreeIndex = getRandomIndex(prodArray);
+  let imgOneIndex = getRandomIndex();
+  let imgTwoIndex = getRandomIndex();
+  let imgThreeIndex = getRandomIndex();
 
   // TODO: Make sure that the images are not the same
   while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
-    imgTwoIndex = getRandomIndex(prodArray);
+    imgTwoIndex = getRandomIndex();
+    imgThreeIndex = getRandomIndex();
   }
 
-  imgOne.src = prodArray[0].image;
-  imgOne.alt = `this is an image of ${prodArray[imgOneIndex].name}`;
+  imgOne.src = prodArray[imgOneIndex].image;
   imgOne.title = prodArray[imgOneIndex].image;
-  imgTwo.src = prodArray[1].image;
-  imgTwo.alt = `this is an image of ${prodArray[imgTwoIndex].name}`;
+  imgOne.alt = `this is an image of ${prodArray[imgOneIndex].name}`;
+  imgTwo.src = prodArray[imgTwoIndex].image;
   imgTwo.title = prodArray[imgTwoIndex].image;
-  imgThree.src = prodArray[2].image;
-  imgThree.alt = `this is an image of ${prodArray[imgThreeIndex].name}`;
+  imgTwo.alt = `this is an image of ${prodArray[imgTwoIndex].name}`;
+  imgThree.src = prodArray[imgThreeIndex].image;
   imgThree.title = prodArray[imgThreeIndex].image;
-}
+  imgThree.alt = `this is an image of ${prodArray[imgThreeIndex].name}`;
 
-// TODO: Increase the number of views
-prodArray[imgOneIndex].views++;
-prodArray[imgTwoIndex].views++;
-prodArray[imgThreeIndex].views++;
+  // TODO: Increase the number of views
+  prodArray[imgOneIndex].views++;
+  prodArray[imgTwoIndex].views++;
+  prodArray[imgThreeIndex].views++;
+}
 
 function getRandomIndex() {
   return Math.floor(Math.random() * prodArray.length);
 }
 
-handleImageClick(event) {
+function handleImageClick(event){
   // TODO: Identify which image was clicked
   let imgClicked = event.target.title;
-  console.log(imgClicked);
+  console.dir(imgClicked);
 
   // TODO: Increase the number of clicks on the image
   for (let i = 0; i < prodArray.length; i++) {
-    if (imgClicked === prodArray[i].name){
+    if (imgClicked === prodArray[i].name) {
       prodArray[i].votes++;
     }
   }
@@ -71,7 +77,21 @@ handleImageClick(event) {
   renderImg();
 
   // TODO: Once voting is complete, stop the click event from bubbling up
+  if (votingRounds === 0) {
+    imgContainer.removeEventListener('click', handleImageClick);
+    //document.getElementById('show-results-btn').style = 'visibility: visible';
+  }
+}
 
+function handleShowResults(){
+  if (votingRounds === 0){
+    for (let i = 0; i < prodArray.length; i++){
+      let prodListItem = document.createElement('li');
+      prodListItem.textContent = `${prodArray[i].name}: Views: ${prodArray[i].views} & Votes: ${prodArray[i].votes}`;
+      resultsList.appendChild(prodListItem);
+    }
+  }
+}
 
 // ********** EXECUTABLE CODE **********
 let bag = new Product('bag');
@@ -99,3 +119,4 @@ prodArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulh
 renderImg();
 
 imgContainer.addEventListener('click', handleImageClick);
+resultsBtn.addEventListener('click', handleShowResults);
