@@ -37,15 +37,15 @@ function renderImg() {
     imgTwoIndex = getRandomIndex();
     imgThreeIndex = getRandomIndex();
   }
-
+  // mapping
   imgOne.src = prodArray[imgOneIndex].image;
-  imgOne.title = prodArray[imgOneIndex].image;
+  imgOne.title = prodArray[imgOneIndex].name;
   imgOne.alt = `this is an image of ${prodArray[imgOneIndex].name}`;
   imgTwo.src = prodArray[imgTwoIndex].image;
-  imgTwo.title = prodArray[imgTwoIndex].image;
+  imgTwo.title = prodArray[imgTwoIndex].name;
   imgTwo.alt = `this is an image of ${prodArray[imgTwoIndex].name}`;
   imgThree.src = prodArray[imgThreeIndex].image;
-  imgThree.title = prodArray[imgThreeIndex].image;
+  imgThree.title = prodArray[imgThreeIndex].name;
   imgThree.alt = `this is an image of ${prodArray[imgThreeIndex].name}`;
 
   // TODO: Increase the number of views
@@ -65,13 +65,13 @@ function handleImageClick(event){
 
   // TODO: Increase the number of clicks on the image
   for (let i = 0; i < prodArray.length; i++) {
-    if (imgClicked === prodArray[i].image) {
+    if (imgClicked === prodArray[i].name) {
       prodArray[i].votes++;
     }
-    // console.log(prodArray[i].votes);
-    // console.log(prodArray[i].name);
-    // console.log(prodArray[i].image);
-    // console.log(imgClicked);
+    console.log(prodArray[i].votes);
+    console.log(prodArray[i].name);
+    console.log(prodArray[i].image);
+    console.log(imgClicked);
   }
 
   // TODO: Decrease the number of voting rounds
