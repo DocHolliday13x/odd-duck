@@ -13,15 +13,15 @@ let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
 
-let resultsBtn = document.getElementById('results-btn');
+let resultsBtn = document.getElementById('show-results-btn');
 let resultsList = document.getElementById('results-container');
 
 // ********** CONSTRUCTOR FUNCTIONS **********
 function Product(name, fileExtension = 'jpg') {
   this.name = name;
   this.image = `img/${name}.${fileExtension}`;
-  this.votes = 0;
   this.views = 0;
+  this.votes = 0;
 }
 
 // ********** HELPER FUNCTIONS/UTILITIES **********
@@ -65,9 +65,13 @@ function handleImageClick(event){
 
   // TODO: Increase the number of clicks on the image
   for (let i = 0; i < prodArray.length; i++) {
-    if (imgClicked === prodArray[i].name) {
+    if (imgClicked === prodArray[i].image) {
       prodArray[i].votes++;
     }
+    // console.log(prodArray[i].votes);
+    // console.log(prodArray[i].name);
+    // console.log(prodArray[i].image);
+    // console.log(imgClicked);
   }
 
   // TODO: Decrease the number of voting rounds
@@ -90,6 +94,7 @@ function handleShowResults(){
       prodListItem.textContent = `${prodArray[i].name}: Views: ${prodArray[i].views} & Votes: ${prodArray[i].votes}`;
       resultsList.appendChild(prodListItem);
     }
+    resultsBtn.removeEventListener('click', handleShowResults);
   }
 }
 
@@ -108,7 +113,7 @@ let pen = new Product('pen');
 let petSweep = new Product('pet-sweep');
 let scissors = new Product('scissors');
 let shark = new Product('shark');
-let sweep = new Product('sweep', 'img/sweep.png');
+let sweep = new Product('sweep', 'png');
 let tauntaun = new Product('tauntaun');
 let unicorn = new Product('unicorn');
 let waterCan = new Product('water-can');
