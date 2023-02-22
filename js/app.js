@@ -5,6 +5,7 @@ console.log('hello world');
 
 let prodArray = [];
 let votingRounds = 25;
+let indexArray = [];
 
 // ********** DOM WINDOWS **********
 
@@ -12,9 +13,11 @@ let imgContainer = document.getElementById('img-container');
 let imgOne = document.getElementById('img-one');
 let imgTwo = document.getElementById('img-two');
 let imgThree = document.getElementById('img-three');
-
 let resultsBtn = document.getElementById('show-results-btn');
-let resultsList = document.getElementById('results-container');
+//let resultsList = document.getElementById('results-container');
+
+// ********** CANVAS ELEMENT FOR CHART **********
+let ctx = document.getElementById('my-chart');
 
 // ********** CONSTRUCTOR FUNCTIONS **********
 function Product(name, fileExtension = 'jpg') {
@@ -24,19 +27,65 @@ function Product(name, fileExtension = 'jpg') {
   this.votes = 0;
 }
 
+// ********** CHART RENDERING **********
+function renderChart() {
+  let prodNames = [];
+  let prodVotes = [];
+  let prodViews = [];
+
+  for (let i = 0; i < prodArray.length; i++) {
+    prodNames.push(prodArray[i].name);
+    prodVotes.push(prodArray[i].votes);
+    prodViews.push(prodArray[i].views);
+  }
+
+  let chartObj = {
+    type: 'bar',
+    data: {
+      labels: prodNames,
+      datasets: [{
+        label: '# of Views',
+        data: prodViews,
+        borderWidth: 2,
+        backgroundColor: ['black'],
+        borderColor: ['pink']
+      },
+      {
+        label: '# of Votes',
+        data: prodVotes,
+        borderWidth: 2,
+        backgroundColor: ['pink'],
+        borderColor: ['black']
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  };
+  // render chart - 2 arguments for chart constructor (canvas element, config object w/data)
+  new Chart(ctx, chartObj); //eslint-disable-line
+}
+
 // ********** HELPER FUNCTIONS/UTILITIES **********
 
 function renderImg() {
-  // TODO: 3 images per page
-  let imgOneIndex = getRandomIndex();
-  let imgTwoIndex = getRandomIndex();
-  let imgThreeIndex = getRandomIndex();
 
-  // TODO: Make sure that the images are not the same
-  while (imgOneIndex === imgTwoIndex || imgOneIndex === imgThreeIndex || imgTwoIndex === imgThreeIndex) {
-    imgTwoIndex = getRandomIndex();
-    imgThreeIndex = getRandomIndex();
+  while (indexArray.length < 6) {
+    let randomNum = getRandomIndex();
+    if (!indexArray.includes(randomNum)) {
+      indexArray.push(randomNum);
+    }
   }
+  console.log(indexArray);
+
+  let imgOneIndex = indexArray.shift();
+  let imgTwoIndex = indexArray.shift();
+  let imgThreeIndex = indexArray.shift();
+
   // mapping
   imgOne.src = prodArray[imgOneIndex].image;
   imgOne.title = prodArray[imgOneIndex].name;
@@ -53,48 +102,35 @@ function renderImg() {
   prodArray[imgTwoIndex].views++;
   prodArray[imgThreeIndex].views++;
 }
-
+// gets a random image from the prod array by index number
 function getRandomIndex() {
   return Math.floor(Math.random() * prodArray.length);
 }
 
-function handleImageClick(event){
-  // TODO: Identify which image was clicked
-  let imgClicked = event.target.title;
-  console.dir(imgClicked);
+// ********** EVENT HANDLERS **********
 
+function handleImageClick(event) {
+  let imgClicked = event.target.title;
+  console.dir(imgClicked); //print the title of the clicked image in console
   // TODO: Increase the number of clicks on the image
   for (let i = 0; i < prodArray.length; i++) {
     if (imgClicked === prodArray[i].name) {
       prodArray[i].votes++;
+      votingRounds--;
+      renderImg();
     }
-    console.log(prodArray[i].votes);
-    console.log(prodArray[i].name);
-    console.log(prodArray[i].image);
-    console.log(imgClicked);
   }
-
-  // TODO: Decrease the number of voting rounds
-  votingRounds--;
-
-  // TODO: Rerender the images
-  renderImg();
 
   // TODO: Once voting is complete, stop the click event from bubbling up
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleImageClick);
-    //document.getElementById('show-results-btn').style = 'visibility: visible';
   }
 }
 
-function handleShowResults(){
-  if (votingRounds === 0){
-    for (let i = 0; i < prodArray.length; i++){
-      let prodListItem = document.createElement('li');
-      prodListItem.textContent = `${prodArray[i].name}: Views: ${prodArray[i].views} & Votes: ${prodArray[i].votes}`;
-      resultsList.appendChild(prodListItem);
-    }
+function handleShowResults() {
+  if (votingRounds === 0) {
     resultsBtn.removeEventListener('click', handleShowResults);
+    renderChart();
   }
 }
 
