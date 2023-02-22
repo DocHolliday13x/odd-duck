@@ -107,6 +107,10 @@ function getRandomIndex() {
   return Math.floor(Math.random() * prodArray.length);
 }
 
+// ********** NAVBAR Function **********
+
+
+
 // ********** EVENT HANDLERS **********
 
 function handleImageClick(event) {
