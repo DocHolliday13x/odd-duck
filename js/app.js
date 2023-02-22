@@ -122,8 +122,15 @@ function handleImageClick(event) {
   }
 
   // TODO: Once voting is complete, stop the click event from bubbling up
+  // ********** LOCAL STORAGE STARTS HERE **********
+  // TODO: Convert our data to a string and store it in local storage
   if (votingRounds === 0) {
     imgContainer.removeEventListener('click', handleImageClick);
+    let stringifiedProducts = JSON.stringify(prodArray);
+    console.log('stringified product list >>>', stringifiedProducts);
+
+    // TODO: Set stringifiedProducts to local storage
+    localStorage.setItem('prodArray', stringifiedProducts);
   }
 }
 
@@ -134,30 +141,86 @@ function handleShowResults() {
   }
 }
 
-// ********** EXECUTABLE CODE **********
-let bag = new Product('bag');
-let banana = new Product('banana');
-let bathroom = new Product('bathroom');
-let boots = new Product('boots');
-let breakfast = new Product('breakfast');
-let bubblegum = new Product('bubblegum');
-let chair = new Product('chair');
-let cthulhu = new Product('cthulhu');
-let dogDuck = new Product('dog-duck');
-let dragon = new Product('dragon');
-let pen = new Product('pen');
-let petSweep = new Product('pet-sweep');
-let scissors = new Product('scissors');
-let shark = new Product('shark');
-let sweep = new Product('sweep', 'png');
-let tauntaun = new Product('tauntaun');
-let unicorn = new Product('unicorn');
-let waterCan = new Product('water-can');
-let wineGlass = new Product('wine-glass');
 
-prodArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
+
+// ********** EXECUTABLE CODE **********
+
+// ********** Local Storage Continues Here **********
+// TODO: Get the stringifiedProducts from local storage
+let retrievedProducts = localStorage.getItem('prodArray');
+console.log('Product List from Local Storage >>>', retrievedProducts);
+// TODO: Convert back to usable code
+let parsedProducts = JSON.parse(retrievedProducts);
+console.log('My Parsed Product List >>>', parsedProducts);
+
+// ********** REBUILD PRODUCT ARRAY USING CONSTRUCTOR **********
+if (retrievedProducts) {
+  for (let i = 0; i < parsedProducts.length; i++) {
+    if (parsedProducts[i].name === 'sweep') {
+      let reconstructedSweep = new Product(parsedProducts[i].name, 'png');
+      reconstructedSweep.views = parsedProducts[i].views;
+      reconstructedSweep.votes = parsedProducts[i].votes;
+      prodArray.push(reconstructedSweep);
+    } else {
+      let reconstructedProd = new Product(parsedProducts[i].name);
+      reconstructedProd.views = parsedProducts[i].views;
+      reconstructedProd.votes = parsedProducts[i].votes;
+      prodArray.push(reconstructedProd);
+    }
+  }
+}
+else {
+  let bag = new Product('bag');
+  let banana = new Product('banana');
+  let bathroom = new Product('bathroom');
+  let boots = new Product('boots');
+  let breakfast = new Product('breakfast');
+  let bubblegum = new Product('bubblegum');
+  let chair = new Product('chair');
+  let cthulhu = new Product('cthulhu');
+  let dogDuck = new Product('dog-duck');
+  let dragon = new Product('dragon');
+  let pen = new Product('pen');
+  let petSweep = new Product('pet-sweep');
+  let scissors = new Product('scissors');
+  let shark = new Product('shark');
+  let sweep = new Product('sweep', 'png');
+  let tauntaun = new Product('tauntaun');
+  let unicorn = new Product('unicorn');
+  let waterCan = new Product('water-can');
+  let wineGlass = new Product('wine-glass');
+
+  prodArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
+}
+
 
 renderImg();
 
 imgContainer.addEventListener('click', handleImageClick);
 resultsBtn.addEventListener('click', handleShowResults);
+//********** EASY PATH OUT OF THE WOODS **********
+// if (retrievedProducts) {
+//   prodArray = parsedProducts;
+// } else {
+//   let bag = new Product('bag');
+//   let banana = new Product('banana');
+//   let bathroom = new Product('bathroom');
+//   let boots = new Product('boots');
+//   let breakfast = new Product('breakfast');
+//   let bubblegum = new Product('bubblegum');
+//   let chair = new Product('chair');
+//   let cthulhu = new Product('cthulhu');
+//   let dogDuck = new Product('dog-duck');
+//   let dragon = new Product('dragon');
+//   let pen = new Product('pen');
+//   let petSweep = new Product('pet-sweep');
+//   let scissors = new Product('scissors');
+//   let shark = new Product('shark');
+//   let sweep = new Product('sweep', 'png');
+//   let tauntaun = new Product('tauntaun');
+//   let unicorn = new Product('unicorn');
+//   let waterCan = new Product('water-can');
+//   let wineGlass = new Product('wine-glass');
+
+//   prodArray.push(bag, banana, bathroom, boots, breakfast, bubblegum, chair, cthulhu, dogDuck, dragon, pen, petSweep, scissors, shark, sweep, tauntaun, unicorn, waterCan, wineGlass);
+// }
